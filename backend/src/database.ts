@@ -1,9 +1,9 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
-
+import { seedDatabase } from './seed';
 // Load environment variables
 dotenv.config();
-
+ 
 /**
  * PostgreSQL Connection Pool
  * Creates a pool of database connections for efficient query execution
@@ -11,7 +11,7 @@ dotenv.config();
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
-
+ 
 /**
  * Execute a SQL query with optional parameters
  * @param text - SQL query string
@@ -21,7 +21,7 @@ const pool = new Pool({
 export const query = (text: string, params?: any[]) => {
   return pool.query(text, params);
 };
-
+ 
 /**
  * Initialize Database Schema
  * Creates the apartments table if it doesn't exist
@@ -45,11 +45,23 @@ export const initDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
+ 
+    // Check if table is empty
+    const res = await query('SELECT COUNT(*) FROM apartments');
+    const count = parseInt(res.rows[0].count);
+   
+    // If empty call seed
+    if (count === 0) {
+      console.log('🌱 Table is empty. Calling seed script...');
+      await seedDatabase(query);
+    } else {
+      console.log('ℹ️ Database already has data. Skipping seed.');
+    }
     console.log('✅ Database initialized successfully');
   } catch (error) {
     console.error('❌ Error initializing database:', error);
     throw error;
   }
 };
-
+ 
 export default pool;

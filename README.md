@@ -281,22 +281,11 @@ curl http://localhost:5000/api/apartments
 | image_url | VARCHAR(500) | NULLABLE |
 | created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
 
-## 🌱 Seeding Sample Data
+## 🌱 Database Seeding
 
-To populate the database with sample apartments:
+The application automatically checks the database on startup. If the `apartments` table is empty, it will auto-populate (seed) it with sample data.
 
-### Option 1: Using Docker
-```bash
-docker-compose exec backend npm run seed
-```
-
-### Option 2: Running Locally
-```bash
-cd backend
-npm run seed
-```
-
-This will add 6 sample apartments to the database for testing purposes.
+This will add 12 sample apartments to the database for testing purposes.
 
 ## 🔧 Development
 
